@@ -6,26 +6,39 @@
 /*   By: glajara- <glajara-@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 16:33:23 by glajara-          #+#    #+#             */
-/*   Updated: 2024/05/05 16:52:50 by glajara-         ###   ########.fr       */
+/*   Updated: 2024/05/05 18:19:25 by glajara-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>		// usleep
-#include <stdio.h>		// printf
-#include <pthread.h>	// pthread_*
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <sys/time.h>   // gettimeofday
 
-void	*printmsg(void	*ptr)
+// Returns the current timestamp in milliseconds.
+long    get_timestamp()
 {
-	char	*str;
+	struct timeval	now;
+	long		timestamp;
+
+	gettimeofday(&now, NULL);
+	timestamp = (long)now.tv_sec * 1000 + (long)now.tv_usec / 1000;
+	return (timestamp);
+}
+
+void	*printmsg(void  *ptr)
+{
+    char	*str;
 
 	str = (char *)ptr;
-	printf("%s : Hello World!\n", str);
-	usleep(20000);
-	printf("%s : Goodbye World...\n", str);
+	printf("[%ld] %s: Hello World!\n", get_timestamp(), str);
+	usleep(2000000);
+	printf("[%ld] %s: Goodbye World...\n", get_timestamp(), str);
 	return (NULL);
 }
 
-int	main(void)
+int main(void)
 {
 	pthread_t	t1;
 	pthread_t	t2;
